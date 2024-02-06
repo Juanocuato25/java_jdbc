@@ -13,6 +13,7 @@ public class ConexionBaseDatos {
     private static String password = "root";
 
     private static Connection connection;
+    //Se crea el metodo para hacer la conexion a la BD
     public static Connection getInstance() throws SQLException {
         if (connection == null){
             connection = DriverManager.getConnection(url, username, password);
