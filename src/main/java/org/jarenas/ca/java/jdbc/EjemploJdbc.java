@@ -1,8 +1,11 @@
 package org.jarenas.ca.java.jdbc;
 
+import org.jarenas.ca.java.jdbc.model.Categoria;
 import org.jarenas.ca.java.jdbc.model.Producto;
+import org.jarenas.ca.java.jdbc.repositorio.CategoriaRepositorioImpl;
 import org.jarenas.ca.java.jdbc.repositorio.ProductoRepositorioImpl;
 import org.jarenas.ca.java.jdbc.repositorio.Repositorio;
+import org.jarenas.ca.java.jdbc.repositorio.RepositorioCategoria;
 import org.jarenas.ca.java.jdbc.util.ConexionBaseDatos;
 
 import java.sql.*;
@@ -15,8 +18,8 @@ public class EjemploJdbc {
         try (Connection conn = ConexionBaseDatos.getInstance()) {
 
             Repositorio<Producto> repositorio = new ProductoRepositorioImpl();
-
-            menu(repositorio);
+            RepositorioCategoria<Categoria> rpc = new CategoriaRepositorioImpl();
+            menu(repositorio, rpc);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -24,27 +27,20 @@ public class EjemploJdbc {
 
     }
 
-    public static Producto newProducto() {
-        Producto monitor = new Producto();
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("REGISTRAR NUEVO PRODCUTO");
 
 
-        return monitor;
-    }
-
-    public static void menu(Repositorio rp) {
+    public static void menu(Repositorio rp, RepositorioCategoria rpc) {
         Scanner sc = new Scanner(System.in);
         int op = 0;
         Producto prod = new Producto();
+        Categoria categoria = new Categoria();
         Long idProducto = 0L;
         System.out.println(" === BIENVENIDO === ");
         do {
             System.out.println("Ingrese la opcion que desea: \n" +
                     "1. Listar \n" +
                     "2. Buscar por ID \n" +
-                    "3. Guardar o Actualizar \n" +
+                    "3. Guardar producto \n" +
                     "4. Actualizar producto \n" +
                     "5. Eliminar producto \n"+
                     "6. Salir \n");
@@ -68,12 +64,16 @@ public class EjemploJdbc {
                     System.out.println("Ingrese el Nombre del producto: ");
                     sc.skip("\n");
                     prod.setNombre(sc.nextLine());
+                    System.out.println("A que categoria pertenece el producto ?");
+                    listarCategorias(rpc);
+                    categoria.setId(sc.nextLong());
+                    prod.setCategoria(categoria);
                     System.out.println("Ingrese el precio del producto");
                     prod.setPrecio(sc.nextInt());
                     prod.setFechaRegistro(new java.util.Date());
+                    System.out.println(" PRODUCTO GUARDADO CON EXITO ");
                     rp.guardar(prod);
                     rp.listar().forEach(System.out::println);
-                    System.out.println(" PRODUCTO GUARDADO CON EXITO ");
                     System.out.println("===============================================");
                     break;
                 case 4:
@@ -85,6 +85,10 @@ public class EjemploJdbc {
                     prod.setNombre(sc.nextLine());
                     System.out.println("Ingrese el nuevo precio: ");
                     prod.setPrecio(sc.nextInt());
+                    System.out.println("Ingrese la nueva categoria: ");
+                    listarCategorias(rpc);
+                    categoria.setId(sc.nextLong());
+                    prod.setCategoria(categoria);
                     rp.guardar(prod);
                     rp.listar().forEach(System.out::println);
                     System.out.println(" PRODUCTO ACTUALIZADO CON EXITO ");
@@ -100,6 +104,11 @@ public class EjemploJdbc {
             }
         } while (op != 6);
 
+    }
+
+    private static void listarCategorias(RepositorioCategoria rpc){
+        System.out.println(" === Listado de categorias === ");
+        rpc.listarCategoria().forEach(System.out::println);
     }
 
 }

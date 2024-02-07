@@ -8,6 +8,8 @@ public class Producto {
     private Integer precio;
     private Date fechaRegistro;
 
+    private Categoria categoria;
+
     public Producto() {
     }
 
@@ -18,7 +20,9 @@ public class Producto {
                 nombre +
                 " | " +
                 precio +
-                "|" +
+                " | " +
+                categoria.getNombre() +
+                " | "+
                 fechaRegistro;
     }
 
@@ -59,5 +63,13 @@ public class Producto {
 
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }
